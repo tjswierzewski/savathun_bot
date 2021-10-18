@@ -1,0 +1,15 @@
+{
+  "name": "savathun_bot",
+  "version": "0.0.1",
+  "description": "Bot to act as the Witch Queen",
+  "main": "app.js",
+  "scripts": {
+    "start": "node src/app.js"
+  },
+  "repository": {
+    "url": "https://github.com/tjswierzewski/savathun_bot",
+    "type": "git"
+  },
+  "author": "Timothy Swierziewski",
+  "license": "MIT"
+}
