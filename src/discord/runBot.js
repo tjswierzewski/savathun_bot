@@ -1,8 +1,10 @@
 import WebSocket from 'ws';
+import { printIncoming, printOutgoing } from './helpers/printer';
 
 let sequenceNumber = null;
 let alive = false;
 let sessionId = null;
+let userId = null;
 
 const resume = JSON.stringify({
   op: 6,
@@ -25,7 +27,7 @@ const identify = JSON.stringify({
     presence: {
       activities: [
         {
-          name: 'Reading the Lore',
+          name: 'Spinning webs',
           type: 0,
         },
       ],
@@ -46,7 +48,7 @@ const sendHeartbeat = (client, status) => {
   }
   const heartbeat = JSON.stringify({ op: 1, d: sequenceNumber });
   client.send(heartbeat);
-  console.log(heartbeat);
+  printOutgoing(heartbeat);
   alive = false;
 };
 /**
@@ -57,9 +59,24 @@ const runBot = () => {
 
   discord.on('message', (message) => {
     const data = JSON.parse(message);
-    console.log(data);
+    printIncoming(data);
     sequenceNumber = data.s;
     switch (data.op) {
+      case 0:
+        switch (data.t) {
+          case 'READY':
+            sessionId = data.d.session_id;
+            userId = data.d.user.id;
+            break;
+
+          case 'MESSAGE_CREATE':
+            printIncoming(data.d.content);
+            break;
+
+          default:
+            break;
+        }
+        break;
       case 1:
         sendHeartbeat(discord, alive);
       case 10:
