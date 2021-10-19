@@ -1,7 +1,7 @@
 import WebSocket from 'ws';
 import { printIncoming, printOutgoing } from './helpers/printer';
 
-let punctuation = '!#$%&()*+,-./:;<=>?@[\\]^_{|}~';
+const punctuation = '!#$%&()*+,-./:;<=>?@[\\]^_{|}~';
 
 let sequenceNumber = null;
 let alive = false;
@@ -86,7 +86,6 @@ const runBot = () => {
             if (message.includes('darkness')) {
               printOutgoing('Hello Little Light');
             }
-
             break;
 
           default:
