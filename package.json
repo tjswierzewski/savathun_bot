@@ -19,6 +19,8 @@
     "@babel/core": "^7.15.8",
     "@babel/node": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
+    "eslint": "^8.0.1",
+    "eslint-config-google": "^0.14.0",
     "nodemon": "^2.0.13"
   }
 }
