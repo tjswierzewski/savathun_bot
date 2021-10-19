@@ -4,7 +4,7 @@
   "description": "Bot to act as the Witch Queen",
   "main": "app.js",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "nodemon --exec babel-node -r dotenv/config src/app.js"
   },
   "repository": {
     "url": "https://github.com/tjswierzewski/savathun_bot",
@@ -16,6 +16,9 @@
     "dotenv": "^10.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/node": "^7.15.8",
+    "@babel/preset-env": "^7.15.8",
     "nodemon": "^2.0.13"
   }
 }
