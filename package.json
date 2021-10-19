@@ -4,7 +4,8 @@
   "description": "Bot to act as the Witch Queen",
   "main": "app.js",
   "scripts": {
-    "start": "nodemon --exec babel-node -r dotenv/config src/app.js"
+    "start": "nodemon --exec babel-node -r dotenv/config src/app.js",
+    "test": "jest"
   },
   "repository": {
     "url": "https://github.com/tjswierzewski/savathun_bot",
@@ -22,6 +23,7 @@
     "eslint": "^8.0.1",
     "eslint-config-google": "^0.14.0",
     "eslint-config-prettier": "^8.3.0",
+    "jest": "^27.3.1",
     "nodemon": "^2.0.13",
     "prettier": "2.4.1"
   }
