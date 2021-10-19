@@ -11,5 +11,8 @@
     "type": "git"
   },
   "author": "Timothy Swierziewski",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "dotenv": "^10.0.0"
+  }
 }
