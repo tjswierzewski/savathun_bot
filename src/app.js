@@ -1,3 +1,3 @@
-import runBot from '../runBot';
+import runBot from './discord/runBot';
 
 runBot();

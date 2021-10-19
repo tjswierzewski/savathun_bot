@@ -35,7 +35,11 @@ const identify = JSON.stringify({
     },
   },
 });
-
+/**
+ * Sends websocket heartbeat message with op code 1
+ * @param {object} client Websocket connection
+ * @param {boolean} status true if connection is functional
+ */
 const sendHeartbeat = (client, status) => {
   if (!status) {
     client.terminate();
@@ -45,7 +49,9 @@ const sendHeartbeat = (client, status) => {
   console.log(heartbeat);
   alive = false;
 };
-
+/**
+ * Connects to discord websockets and handles recived messages
+ */
 const runBot = () => {
   const discord = new WebSocket(process.env.WEBSOCKET_URL);
 
