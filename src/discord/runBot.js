@@ -1,6 +1,8 @@
 import WebSocket from 'ws';
 import { printIncoming, printOutgoing } from './helpers/printer';
 
+let punctuation = '!#$%&()*+,-./:;<=>?@[\\]^_{|}~';
+
 let sequenceNumber = null;
 let alive = false;
 let sessionId = null;
@@ -14,6 +16,7 @@ const resume = JSON.stringify({
     seq: sequenceNumber,
   },
 });
+
 const identify = JSON.stringify({
   op: 2,
   d: {
@@ -70,7 +73,20 @@ const runBot = () => {
             break;
 
           case 'MESSAGE_CREATE':
-            printIncoming(data.d.content);
+            let message = data.d.content;
+            printIncoming(message);
+            message = message.split(' ');
+            message = message.map((word) =>
+              word
+                .split('')
+                .filter((letter) => punctuation.indexOf(letter) === -1)
+                .join('')
+                .toLowerCase(),
+            );
+            if (message.includes('darkness')) {
+              printOutgoing('Hello Little Light');
+            }
+
             break;
 
           default:
