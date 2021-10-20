@@ -55,7 +55,11 @@ const sendHeartbeat = (client, status) => {
   printOutgoing(heartbeat);
   alive = false;
 };
-
+/**
+ * Makes a post request to a specified
+ * @param {string} url endpoint of post request
+ * @param {object} message message object
+ */
 const sendPost = async (url, message) => {
   try {
     const response = discordAxios.post(url, message);
