@@ -1,4 +1,5 @@
 import WebSocket from 'ws';
+import discordAxios from './helpers/discordAxios';
 import { printIncoming, printOutgoing } from './helpers/printer';
 
 const punctuation = '!#$%&()*+,-./:;<=>?@[\\]^_{|}~';
@@ -54,6 +55,15 @@ const sendHeartbeat = (client, status) => {
   printOutgoing(heartbeat);
   alive = false;
 };
+
+const sendPost = async (url, message) => {
+  try {
+    const response = discordAxios.post(url, message);
+    printIncoming(response);
+  } catch (error) {
+    printIncoming(error);
+  }
+};
 /**
  * Connects to discord websockets and handles recived messages
  */
@@ -73,18 +83,22 @@ const runBot = () => {
             break;
 
           case 'MESSAGE_CREATE':
-            let message = data.d.content;
-            printIncoming(message);
-            message = message.split(' ');
-            message = message.map((word) =>
-              word
-                .split('')
-                .filter((letter) => punctuation.indexOf(letter) === -1)
-                .join('')
-                .toLowerCase(),
-            );
-            if (message.includes('darkness')) {
-              printOutgoing('Hello Little Light');
+            if (!data.d.author.bot) {
+              let message = data.d.content;
+              printIncoming(message);
+              message = message.split(' ');
+              message = message.map((word) =>
+                word
+                  .split('')
+                  .filter((letter) => punctuation.indexOf(letter) === -1)
+                  .join('')
+                  .toLowerCase(),
+              );
+              if (message.includes('darkness')) {
+                const url = `/channels/${data.d.channel_id}/messages`;
+                const message = { content: 'Hello Little Light' };
+                sendPost(url, message);
+              }
             }
             break;
 
