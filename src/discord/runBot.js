@@ -10,6 +10,8 @@ let sequenceNumber = null;
 let alive = false;
 let sessionId = null;
 let userId = null;
+let lastMessageTime = 0;
+let timeout = 5;
 
 const resume = JSON.stringify({
   op: 6,
@@ -77,6 +79,7 @@ const postRandomPhrase = async (data) => {
   const phrase = await Phrase.findOne().skip(rand).exec();
   const message = { content: phrase.phrase };
   sendPost(url, message);
+  lastMessageTime = Date.now();
 };
 
 const checkKeyword = async (message, data) => {
@@ -118,7 +121,9 @@ const runBot = () => {
                   .join('')
                   .toLowerCase(),
               );
-              checkKeyword(message, data);
+              if (Date.now() - lastMessageTime > timeout * 60000) {
+                checkKeyword(message, data);
+              }
             }
             break;
 
