@@ -1,5 +1,6 @@
 import WebSocket from 'ws';
 import Phrase from '../models/phrase';
+import Trigger from '../models/trigger';
 import discordAxios from './helpers/discordAxios';
 import { printIncoming, printOutgoing } from './helpers/printer';
 
@@ -77,6 +78,16 @@ const postRandomPhrase = async (data) => {
   const message = { content: phrase.phrase };
   sendPost(url, message);
 };
+
+const checkKeyword = async (message, data) => {
+  let triggerList = await Trigger.find().exec();
+  triggerList = triggerList.map((trigger) => {
+    return trigger.trigger;
+  });
+  if (triggerList.some((trigger) => message.includes(trigger))) {
+    postRandomPhrase(data);
+  }
+};
 /**
  * Connects to discord websockets and handles recived messages
  */
@@ -107,9 +118,7 @@ const runBot = () => {
                   .join('')
                   .toLowerCase(),
               );
-              if (message.includes('darkness')) {
-                postRandomPhrase(data);
-              }
+              checkKeyword(message, data);
             }
             break;
 

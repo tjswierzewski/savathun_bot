@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import Phrases from './seeders/phrases.seeder';
+import Triggers from './seeders/triggers.seeder';
 
 const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/savathun-bot';
 
@@ -8,7 +9,7 @@ const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/savathun-bo
  * order is important
  * @type {Object}
  */
-export const seedersList = { Phrases };
+export const seedersList = { Phrases, Triggers };
 /**
  * Connect to mongodb implementation
  * @return {Promise}
