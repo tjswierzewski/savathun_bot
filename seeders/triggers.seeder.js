@@ -9,6 +9,10 @@ const data = [
   { trigger: 'garden' },
   { trigger: 'osiris' },
   { trigger: 'crow' },
+  { trigger: 'queen' },
+  { trigger: 'witch' },
+  { trigger: 'lie' },
+  { trigger: 'lies' },
 ];
 /**
  * Seeder class for triggers
