@@ -1,4 +1,5 @@
 import WebSocket from 'ws';
+import Phrase from '../models/phrase';
 import discordAxios from './helpers/discordAxios';
 import { printIncoming, printOutgoing } from './helpers/printer';
 
@@ -68,6 +69,14 @@ const sendPost = async (url, message) => {
     printIncoming(error);
   }
 };
+const postRandomPhrase = async (data) => {
+  const count = await Phrase.count().exec();
+  const rand = Math.floor(Math.random() * count);
+  const url = `/channels/${data.d.channel_id}/messages`;
+  const phrase = await Phrase.findOne().skip(rand).exec();
+  const message = { content: phrase.phrase };
+  sendPost(url, message);
+};
 /**
  * Connects to discord websockets and handles recived messages
  */
@@ -99,9 +108,7 @@ const runBot = () => {
                   .toLowerCase(),
               );
               if (message.includes('darkness')) {
-                const url = `/channels/${data.d.channel_id}/messages`;
-                const message = { content: 'Hello Little Light' };
-                sendPost(url, message);
+                postRandomPhrase(data);
               }
             }
             break;
