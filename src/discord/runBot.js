@@ -52,7 +52,8 @@ const identify = JSON.stringify({
  */
 const sendHeartbeat = (client, status) => {
   if (!status) {
-    client.terminate();
+    restartBot();
+    return;
   }
   const heartbeat = JSON.stringify({ op: 1, d: sequenceNumber });
   client.send(heartbeat);
