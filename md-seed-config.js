@@ -2,7 +2,8 @@ import mongoose from 'mongoose';
 import Phrases from './seeders/phrases.seeder';
 import Triggers from './seeders/triggers.seeder';
 
-const mongoURL = process.env.MONGO_URL || 'mongodb://localhost:27017/savathun-bot';
+const env = require('dotenv').config();
+const mongoURL = env.parsed.MONGO_URL;
 
 /**
  * Seeders List
