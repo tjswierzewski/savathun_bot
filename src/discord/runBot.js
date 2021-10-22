@@ -91,6 +91,11 @@ const checkKeyword = async (message, data) => {
     postRandomPhrase(data);
   }
 };
+
+const restartBot = (client) => {
+  client.terminate();
+  runBot();
+};
 /**
  * Connects to discord websockets and handles recived messages
  */
@@ -133,6 +138,15 @@ const runBot = () => {
         break;
       case 1:
         sendHeartbeat(discord, alive);
+      case 7:
+        restartBot(discord);
+        break;
+      case 9:
+        if (!data.d) {
+          sessionId = null;
+        }
+        restartBot(discord);
+        break;
       case 10:
         alive = true;
         sessionId = data.d.session_id;
