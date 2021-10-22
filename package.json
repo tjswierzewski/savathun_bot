@@ -6,7 +6,9 @@
   "scripts": {
     "start": "nodemon --exec babel-node -r dotenv/config src/app.js",
     "test": "jest",
-    "seed": "yarn run md-seed run -d"
+    "seed": "yarn run md-seed run -d",
+    "build": "babel src -d lib",
+    "production": "node -r dotenv/config lib/app.js"
   },
   "repository": {
     "url": "https://github.com/tjswierzewski/savathun_bot",
@@ -21,6 +23,7 @@
     "mongoose-data-seed": "^2.1.6"
   },
   "devDependencies": {
+    "@babel/cli": "^7.15.7",
     "@babel/core": "^7.15.8",
     "@babel/node": "^7.15.8",
     "@babel/preset-env": "^7.15.8",
