@@ -35,7 +35,7 @@ export const data = [
   { phrase: 'Let me show you a different interpretation...' },
   { phrase: 'They call me a liar. but we share mutual interest' },
   { phrase: 'I am the finality, the reward—I am the true ending.' },
-  { phrase: "Delightful to see so many working for a common goal, isn't it? " },
+  { phrase: "Delightful to see so many working for a common goal, isn't it?" },
   { phrase: "It's a pity Mara Sov doesn't see it that way" },
   { phrase: "When this is over, I hope my good friend Mara Sov isn't disappointed" },
   { phrase: "I know what it's like to be an exile, to be hated for things outside of your control" },
@@ -46,4 +46,5 @@ export const data = [
   { phrase: 'I do so enjoy our talks' },
   { phrase: "Thank you... I won't forget" },
   { phrase: 'Let me tell you a secret...' },
+  { phrase: 'I am no villain, and you are no hero, we are paracausal' },
 ];
