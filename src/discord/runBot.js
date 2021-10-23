@@ -151,7 +151,6 @@ const runBot = () => {
         switch (data.t) {
           case 'READY':
             sessionId = data.d.session_id;
-            userId = data.d.user.id;
             break;
 
           case 'MESSAGE_CREATE':
