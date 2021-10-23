@@ -11,7 +11,7 @@ let alive = false;
 let sessionId = null;
 let userId = null;
 let lastMessageTime = 0;
-const timeout = 5;
+const timeout = process.env.TIMEOUT;
 let interval = null;
 
 const resume = JSON.stringify({
@@ -74,6 +74,7 @@ const sendPost = async (url, message) => {
     printIncoming(error);
   }
 };
+
 const postRandomPhrase = async (data) => {
   const count = await Phrase.count().exec();
   const rand = Math.floor(Math.random() * count);
