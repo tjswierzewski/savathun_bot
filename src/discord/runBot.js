@@ -9,9 +9,8 @@ const punctuation = '!#$%&()*+,-./:;<=>?@[\\]^_{|}~';
 let sequenceNumber = null;
 let alive = false;
 let sessionId = null;
-let userId = null;
 let lastMessageTime = 0;
-const timeout = 5;
+const timeout = process.env.TIMEOUT;
 let interval = null;
 
 const resume = JSON.stringify({
@@ -74,30 +73,68 @@ const sendPost = async (url, message) => {
     printIncoming(error);
   }
 };
-const postRandomPhrase = async (data) => {
+/**
+ * Post a Phrase from database to discord channel
+ * @param {string} channel discord channel id
+ */
+const postRandomPhrase = async (channel) => {
   const count = await Phrase.count().exec();
   const rand = Math.floor(Math.random() * count);
-  const url = `/channels/${data.d.channel_id}/messages`;
+  const url = `/channels/${channel}/messages`;
   const phrase = await Phrase.findOne().skip(rand).exec();
   const message = { content: phrase.phrase };
   sendPost(url, message);
   lastMessageTime = Date.now();
 };
-
-const checkKeyword = async (message, data) => {
+/**
+ * Check if message contains any keywords
+ * @param {array} message array of words in message
+ * @return {boolean} if message contains word in the trigger list
+ */
+const checkKeyword = async (message) => {
   let triggerList = await Trigger.find().exec();
   triggerList = triggerList.map((trigger) => {
     return trigger.trigger;
   });
-  if (triggerList.some((trigger) => message.includes(trigger))) {
-    postRandomPhrase(data);
-  }
+  return triggerList.some((trigger) => message.includes(trigger));
 };
-
+/**
+ * Restart bot proccess
+ * @param {object} client discord object
+ */
 const restartBot = (client) => {
   client.terminate();
   clearInterval(interval);
   runBot();
+};
+/**
+ * Break string into an array of words with no puncuation
+ * @param {string} message message to break into array
+ * @return {array} message broken into an array
+ */
+const parseMessage = (message) => {
+  printIncoming(message);
+  message = message.split(' ');
+  message = message.map((word) =>
+    word
+      .split('')
+      .filter((letter) => punctuation.indexOf(letter) === -1)
+      .join('')
+      .toLowerCase(),
+  );
+  return message;
+};
+/**
+ * Actions to take when receving a message
+ * @param {array} message message array
+ * @param {string} channel channel id
+ */
+const respondToMessage = async (message, channel) => {
+  if (Date.now() - lastMessageTime > timeout * 60000) {
+    if (await checkKeyword(message)) {
+      postRandomPhrase(channel);
+    }
+  }
 };
 /**
  * Connects to discord websockets and handles recived messages
@@ -119,19 +156,8 @@ const runBot = () => {
 
           case 'MESSAGE_CREATE':
             if (!data.d.author.bot) {
-              let message = data.d.content;
-              printIncoming(message);
-              message = message.split(' ');
-              message = message.map((word) =>
-                word
-                  .split('')
-                  .filter((letter) => punctuation.indexOf(letter) === -1)
-                  .join('')
-                  .toLowerCase(),
-              );
-              if (Date.now() - lastMessageTime > timeout * 60000) {
-                checkKeyword(message, data);
-              }
+              const message = parseMessage(data.d.content);
+              respondToMessage(message, data.d.channel_id);
             }
             break;
 
