@@ -11,7 +11,8 @@ let alive = false;
 let sessionId = null;
 let userId = null;
 let lastMessageTime = 0;
-let timeout = 5;
+const timeout = 5;
+let interval = null;
 
 const resume = JSON.stringify({
   op: 6,
@@ -95,6 +96,7 @@ const checkKeyword = async (message, data) => {
 
 const restartBot = (client) => {
   client.terminate();
+  clearInterval(interval);
   runBot();
 };
 /**
@@ -151,7 +153,7 @@ const runBot = () => {
       case 10:
         alive = true;
         sessionId = data.d.session_id;
-        setInterval(sendHeartbeat, data.d.heartbeat_interval, discord, alive);
+        interval = setInterval(sendHeartbeat, data.d.heartbeat_interval, discord, alive);
         if (sessionId) {
           discord.send(resume);
           break;
