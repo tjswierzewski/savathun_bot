@@ -11,12 +11,12 @@ class DiscordBot {
    * changing attributes of a bot
    */
   constructor() {
+    this.client;
     this.sequenceNumber = null;
     this.alive = false;
     this.sessionId = null;
     this.lastMessageTime = 0;
     this.timeout = process.env.TIMEOUT;
-    this.interval = null;
   }
   punctuation = '!#$%&()*+,-./:;<=>?@[\\]^_{|}~';
   resume = JSON.stringify({
@@ -53,16 +53,11 @@ class DiscordBot {
   });
   /**
    * Sends websocket heartbeat message with op code 1
-   * @param {object} client Websocket connection
    * @param {boolean} status true if connection is functional
    */
-  sendHeartbeat = (client, status) => {
-    if (!status) {
-      restartBot();
-      return;
-    }
+  sendHeartbeat = () => {
     const heartbeat = JSON.stringify({ op: 1, d: this.sequenceNumber });
-    client.send(heartbeat);
+    this.client.send(heartbeat);
     printOutgoing(heartbeat);
     this.alive = false;
   };
@@ -106,10 +101,9 @@ class DiscordBot {
   };
   /**
    * Restart bot proccess
-   * @param {object} client discord object
    */
-  restartBot = (client) => {
-    client.terminate();
+  restartBot = () => {
+    this.client.terminate();
     clearInterval(this.interval);
     this.runBot();
   };
@@ -143,12 +137,27 @@ class DiscordBot {
     }
   };
   /**
+   * Create rythmic heartbeat that stops when lost connection
+   * @param {integer} interval ms for period of interval
+   * @param {boolean} flag if interval should continue
+   */
+  createHeartbeat = (interval) => {
+    this.sendHeartbeat();
+    setTimeout(() => {
+      if (this.alive) {
+        this.createHeartbeat(interval);
+        return;
+      }
+      this.restartBot;
+    }, interval);
+  };
+  /**
    * Connects to discord websockets and handles recived messages
    */
   runBot = () => {
-    const discord = new WebSocket(process.env.WEBSOCKET_URL);
+    this.client = new WebSocket(process.env.WEBSOCKET_URL);
 
-    discord.on('message', (message) => {
+    this.client.on('message', (message) => {
       const data = JSON.parse(message);
       printIncoming(data);
       this.sequenceNumber = data.s;
@@ -171,30 +180,25 @@ class DiscordBot {
           }
           break;
         case 1:
-          this.sendHeartbeat(discord, this.alive);
+          this.sendHeartbeat();
         case 7:
-          this.restartBot(discord);
+          this.restartBot();
           break;
         case 9:
           if (!data.d) {
             this.sessionId = null;
           }
-          this.restartBot(discord);
+          this.restartBot();
           break;
         case 10:
           this.alive = true;
           this.sessionId = data.d.session_id;
-          this.interval = setInterval(
-            this.sendHeartbeat,
-            data.d.heartbeat_interval,
-            discord,
-            this.alive,
-          );
+          this.createHeartbeat(data.d.heartbeat_interval);
           if (this.sessionId) {
-            discord.send(this.resume);
+            this.client.send(this.resume);
             break;
           }
-          discord.send(this.identify);
+          this.client.send(this.identify);
           break;
 
         case 11:
