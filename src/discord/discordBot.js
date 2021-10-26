@@ -104,7 +104,6 @@ class DiscordBot {
    */
   restartBot = () => {
     this.client.terminate();
-    clearInterval(this.interval);
     this.runBot();
   };
   /**
@@ -148,7 +147,7 @@ class DiscordBot {
         this.createHeartbeat(interval);
         return;
       }
-      this.restartBot;
+      this.restartBot();
     }, interval);
   };
   /**
