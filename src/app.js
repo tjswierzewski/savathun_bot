@@ -1,5 +1,6 @@
 import { connect, connection } from 'mongoose';
-import runBot from './discord/runBot';
+import DiscordBot from './discord/discordBot';
+
 /**
  * Connect to MongoDB
  */
@@ -19,7 +20,8 @@ db.on('error', (err) => {
   console.log(err);
 });
 db.once('open', () => {
-  runBot();
+  const bot = new DiscordBot();
+  bot.runBot();
 });
 
 startMongoDB();
