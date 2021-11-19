@@ -17,6 +17,7 @@ class DiscordBot {
     this.sessionId = null;
     this.lastMessageTime = 0;
     this.timeout = process.env.TIMEOUT;
+    this.timer;
   }
   punctuation = '!#$%&()*+,-./:;<=>?@[\\]^_{|}~';
   resume = JSON.stringify({
@@ -103,6 +104,7 @@ class DiscordBot {
    * Restart bot proccess
    */
   restartBot = () => {
+    clearTimeout(this.timer);
     this.client.close(1012, 'Bot restarted');
     this.runBot();
   };
@@ -142,7 +144,7 @@ class DiscordBot {
    */
   createHeartbeat = (interval) => {
     this.sendHeartbeat();
-    setTimeout(() => {
+    this.timer = setTimeout(() => {
       if (this.alive) {
         this.createHeartbeat(interval);
         return;
