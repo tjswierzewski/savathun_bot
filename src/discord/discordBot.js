@@ -103,7 +103,7 @@ class DiscordBot {
    * Restart bot proccess
    */
   restartBot = () => {
-    this.client.terminate();
+    this.client.close(1012, 'Bot restarted');
     this.runBot();
   };
   /**
@@ -155,6 +155,14 @@ class DiscordBot {
    */
   runBot = () => {
     this.client = new WebSocket(process.env.WEBSOCKET_URL);
+
+    this.client.on('open', () => {
+      printOutgoing('Bot Connected');
+    });
+
+    this.client.on('close', (code, reason) => {
+      printOutgoing(`Bot Disconnected: ${reason}`);
+    });
 
     this.client.on('message', (message) => {
       const data = JSON.parse(message);
