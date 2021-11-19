@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "Bot to act as the Witch Queen",
   "main": "app.js",
+  "type": "module",
   "scripts": {
     "start": "nodemon --exec babel-node -r dotenv/config src/app.js",
     "test": "jest",
