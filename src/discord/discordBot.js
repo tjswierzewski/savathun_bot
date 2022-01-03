@@ -1,6 +1,8 @@
 import WebSocket from 'ws';
 import Phrase from '../models/phrase';
 import Trigger from '../models/trigger';
+import { commandHandler } from './commandHandler';
+import { getCommands } from './commands';
 import discordAxios from './helpers/discordAxios';
 import { printIncoming, printOutgoing } from './helpers/printer';
 /**
@@ -71,6 +73,17 @@ class DiscordBot {
     try {
       discordAxios.post(url, message);
       printOutgoing(message);
+    } catch (error) {
+      printOutgoing(error);
+    }
+  };
+  /**
+   * Makes a delete request to a specified
+   * @param {string} url endpoint of delete request
+   */
+  sendDelete = async (url) => {
+    try {
+      discordAxios.delete(url);
     } catch (error) {
       printOutgoing(error);
     }
@@ -152,14 +165,32 @@ class DiscordBot {
       this.restartBot();
     }, interval);
   };
+
+  postCommands = (commands) => {
+    commands.forEach(async (command) => {
+      printOutgoing(`Posting command ${command.name}`);
+      try {
+        const response = await discordAxios.post(
+          `/applications/${process.env.APPLICATION_ID}/guilds/831880241310990357/commands`,
+          command,
+        );
+        printIncoming(`${response.data.name} posted`);
+      } catch (error) {
+        console.error(error.response.data);
+      }
+    });
+  };
+
   /**
    * Connects to discord websockets and handles recived messages
    */
   runBot = () => {
     this.client = new WebSocket(process.env.WEBSOCKET_URL);
 
-    this.client.on('open', () => {
+    this.client.on('open', async () => {
       printOutgoing('Bot Connected');
+      const commands = await getCommands();
+      this.postCommands(commands);
     });
 
     this.client.on('close', (code, reason) => {
@@ -183,6 +214,9 @@ class DiscordBot {
                 this.respondToMessage(message, data.d.channel_id);
               }
               break;
+
+            case 'INTERACTION_CREATE':
+              commandHandler(this, data.d);
 
             default:
               break;

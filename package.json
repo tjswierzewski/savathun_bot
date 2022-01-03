@@ -8,7 +8,8 @@
     "test": "jest",
     "seed": "yarn run md-seed run -d",
     "build": "babel src -d lib",
-    "production": "node -r dotenv/config lib/app.js"
+    "production": "node -r dotenv/config lib/app.js",
+    "getDestinyData": "babel-node -r dotenv/config src/bungie-api/get-manifest.js"
   },
   "repository": {
     "url": "https://github.com/tjswierzewski/savathun_bot",
@@ -18,11 +19,15 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.24.0",
+    "cross-fetch": "^3.1.4",
     "dotenv": "^10.0.0",
     "lodash": "^4.17.21",
     "mongoose": "^6.0.11",
     "mongoose-data-seed": "^2.1.6",
-    "ws": "^8.2.3"
+    "sqlite": "^4.0.23",
+    "sqlite3": "^5.0.2",
+    "ws": "^8.2.3",
+    "yauzl": "^2.10.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.15.7",
